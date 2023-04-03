@@ -3,7 +3,8 @@ package com.example.demowithtests.service;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.repository.EmployeeRepository;
-import com.example.demowithtests.util.exception.*;
+import com.example.demowithtests.util.exception.NoSuchEmployeeException;
+import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.mail.SmtpMailer;
 import com.example.demowithtests.util.validation.annotation.CustomValidationAnnotation;
 import com.example.demowithtests.util.validation.annotation.CountryMatchesAddresses;
@@ -41,7 +42,7 @@ public class EmployeeServiceBean implements EmployeeService {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
                         new NoSuchEmployeeException("There is no employee with ID=" + id + " in database"));
-        changeActiveStatus(employee);
+        changeActiveStatus(employee); // todo: перенести эту обработку в асспект по валидации полей!
         changePrivateStatus(employee);
 
 //        if (employee.getIsDeleted()) throw new ResourceIsDeletedException();
@@ -62,7 +63,7 @@ public class EmployeeServiceBean implements EmployeeService {
     //----------------------------------------------------------------------------------------------------
     @Override
     @Transactional
-    @CustomValidationAnnotation({IsBooleanFieldValid.class, CountryMatchesAddresses.class})
+    @CustomValidationAnnotation({IsBooleanFieldValid.class/*, CountryMatchesAddresses.class*/})
     public Employee patchEmployee(Integer id, Employee employee) {
         log.debug("updateById(Integer id, Employee employee) Service start: id = {}, employee = {}", employee.getId());
         return employeeRepository.findById(id).map(e -> {
@@ -95,6 +96,8 @@ public class EmployeeServiceBean implements EmployeeService {
 
     //----------------------------------------------------------------------------------------------------
     @Override
+    @Transactional
+    @CustomValidationAnnotation({IsBooleanFieldValid.class/*, CountryMatchesAddresses.class*/})
     public Employee updateEmployee(Integer id, Employee employee) {
         log.debug("updateEmployee(Integer id, Employee employee) Service start: id={},employee = {}", employee.getId());
         return employeeRepository.findById(id).map(e -> {

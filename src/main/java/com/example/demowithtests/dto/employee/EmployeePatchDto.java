@@ -37,13 +37,13 @@ public class EmployeePatchDto {
 
     public LocalDateTime datetime = LocalDateTime.now();
 
-    @IsBooleanFieldValid(value = true, message = "@IsBooleanFieldValid validation: " +
-            "have to use a specific endpoint to resurrect employee (set isDeleted=false)!")
+//    @IsBooleanFieldValid(value = true, message = "@IsBooleanFieldValid validation: " +
+//            "have to use a specific endpoint to resurrect employee (set isDeleted=false)!")
     public Boolean isDeleted;
 
     public Boolean isPrivate;
 
-    @IsBooleanFieldValid(value = false, message = "@IsBooleanFieldValid validation: " +
-            "the status isConfirmed=true can only be set by employee himself via confirmation email!")
+//    @IsBooleanFieldValid(value = false, message = "@IsBooleanFieldValid validation: " +
+//            "the status isConfirmed=true can only be set by employee himself via confirmation email!")
     public Boolean isConfirmed;
 }

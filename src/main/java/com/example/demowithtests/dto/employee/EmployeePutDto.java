@@ -39,8 +39,8 @@ public class EmployeePutDto {
 
     public LocalDateTime datetime = LocalDateTime.now();
 
-    @IsBooleanFieldValid(value = false, message = "@IsBooleanFieldValid validation: " +
-            "have to use a specific endpoint to resurrect employee (set isDeleted=false)!")
+//    @IsBooleanFieldValid(value = true, message = "@IsBooleanFieldValid validation: " +
+//            "have to use a specific endpoint to resurrect employee (set isDeleted=false)!")
     public Boolean isDeleted;
 
     public Boolean isPrivate;

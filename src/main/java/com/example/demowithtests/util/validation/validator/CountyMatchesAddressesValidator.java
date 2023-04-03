@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 
 
 //public class CountyMatchesAddressesValidator implements ConstraintValidator<CountryMatchesAddresses, Object> {
-public class CountyMatchesAddressesValidator implements ConstraintValidator<CountryMatchesAddresses, EmployeePutDto> {
+public class CountyMatchesAddressesValidator
+        implements ConstraintValidator<CountryMatchesAddresses, EmployeePutDto> {
 
     @Override
     public void initialize(CountryMatchesAddresses constraintAnnotation) {
@@ -24,7 +25,7 @@ public class CountyMatchesAddressesValidator implements ConstraintValidator<Coun
 
     @Override
     public boolean isValid(EmployeePutDto validatedObject, ConstraintValidatorContext context) {
-        String countryValue;
+        String  countryValue;
         Field[] fields = validatedObject.getClass().getDeclaredFields();
 
         Field field = getFieldByName(fields, "country");
@@ -36,11 +37,10 @@ public class CountyMatchesAddressesValidator implements ConstraintValidator<Coun
         }
 
         //----------------------------------------------------------------------------------------------------
-//     todo   Сделать отдельный мето, который достает поле по названию и его использовать.
-        Field addressesField = Arrays.stream(fields)
-                .filter(f ->//    f.isAnnotationPresent(CountryMatchesAddresses.class) &&
-                        f.getName().equals("addresses"))
-                .findAny().get();
+        //     todo   Сделать отдельный мето, который достает поле по названию и его использовать.
+        Field addressesField =
+                Arrays.stream(fields).filter(f ->//    f.isAnnotationPresent(CountryMatchesAddresses.class) &&
+                                                     f.getName().equals("addresses")).findAny().get();
 
         Set<AddressDto> addresses;
         try {
@@ -49,9 +49,8 @@ public class CountyMatchesAddressesValidator implements ConstraintValidator<Coun
             throw new RuntimeException(e);
         }
 
-        Set<String> countriesFromAddresses = addresses.stream()
-                .map(address -> address.getCountry())
-                .collect(Collectors.toSet());
+        Set<String> countriesFromAddresses =
+                addresses.stream().map(address -> address.getCountry()).collect(Collectors.toSet());
 
         return countriesFromAddresses.contains(countryValue);
     }
@@ -59,10 +58,9 @@ public class CountyMatchesAddressesValidator implements ConstraintValidator<Coun
 
     @NotNull
     private Field getFieldByName(Field[] fields, String fieldName) {
-        Field countryField = Arrays.stream(fields)
-                .filter(f ->//    f.isAnnotationPresent(CountryMatchesAddresses.class) &&
-                        f.getName().equals(fieldName))
-                .findAny().get();
+        Field countryField =
+                Arrays.stream(fields).filter(f ->//    f.isAnnotationPresent(CountryMatchesAddresses.class) &&
+                                                     f.getName().equals(fieldName)).findAny().get();
         return countryField;
     }
     //----------------------------------------------------------------------------------------------------

@@ -13,10 +13,24 @@ import java.util.Date;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(EmployeeIsBooleanFieldValidException.class)
+    public ResponseEntity<?> EmployeeIsBooleanFieldValidException(
+            EmployeeIsBooleanFieldValidException exception
+            , WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
+    }
+
+
     @ExceptionHandler(EmployeeUnconfirmedDataException.class)
-//    public ResponseEntity<ErrorDetails> employeeUnconfirmedDataException(WebRequest request) {
-    public ResponseEntity<ErrorDetails> employeeUnconfirmedDataException(EmployeeUnconfirmedDataException exception,
-                                                                         WebRequest request) {
+    //    public ResponseEntity<ErrorDetails> employeeUnconfirmedDataException(WebRequest request) {
+    public ResponseEntity<ErrorDetails> employeeUnconfirmedDataException(
+            EmployeeUnconfirmedDataException exception,
+            WebRequest request) {
 
         ErrorDetails errorDetails = new ErrorDetails(new Date(),
                 exception.getMessage(),
@@ -27,10 +41,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailSendingException.class)
     public ResponseEntity<?> emailSendingException(EmailSendingException exception,
                                                    WebRequest request) {
-
-        ErrorDetails errorDetails = new ErrorDetails(new Date(),
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
                 exception.getMessage(),
-                request.getDescription(false));
+                request.getDescription(false)
+        );
         return new ResponseEntity<>(errorDetails, HttpStatus.EXPECTATION_FAILED);
     }
 
@@ -64,12 +79,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceMarkedAsDeletedException.class)
     protected ResponseEntity<MyGlobalExceptionHandler> handleDeleteException() {
-        return new ResponseEntity<>(new MyGlobalExceptionHandler("This user was deleted"), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new MyGlobalExceptionHandler("This user was deleted"),
+                HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+    public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex,
+                                                       WebRequest request) {
+        ErrorDetails errorDetails =
+                new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 

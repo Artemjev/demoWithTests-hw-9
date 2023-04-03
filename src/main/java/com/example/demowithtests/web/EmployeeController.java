@@ -44,12 +44,11 @@ public class EmployeeController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "This is endpoint returned a employee by his id.",
-            description = "Create request to read a employee by id",
-            tags = {"Employee"})
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "OK. pam pam param.")
-            , @ApiResponse(responseCode = "400", description = "Invalid input")
-            , @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found.")
-            , @ApiResponse(responseCode = "409", description = "Employee already exists")})
+            description = "Create request to read a employee by id", tags = {"Employee"})
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "OK. pam pam param."),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
+            @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public /*@Valid*/ EmployeeReadDto getEmployee(@PathVariable Integer id) {
 
         return EmployeeMapper.INSTANCE.employeeToEmployeeReadDto(employeeService.getEmployee(id));
@@ -59,25 +58,27 @@ public class EmployeeController {
     //Добовление юзера в базу данных
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "This is endpoint to add a new employee.", description = "Create request to add a new " +
-            "employee.", tags = {"Employee"})
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "CREATED. The new employee is successfully created and " +
-                    "added to database.")
-            , @ApiResponse(responseCode = "400", description = "Invalid input")
-            , @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found.")
-            , @ApiResponse(responseCode = "409", description = "Employee already exists")
-    })
+    @Operation(summary = "This is endpoint to add a new employee.",
+            description = "Create request to add a new " + "employee.", tags = {"Employee"})
+    @ApiResponses(value = {@ApiResponse(responseCode = "201",
+            description = "CREATED. The new employee is successfully created and " + "added to database."),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
+            @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeReadDto createEmployee(@Valid @RequestBody EmployeeCreateDto createDto) {
         Employee employee = EmployeeMapper.INSTANCE.employeeCreateDtoToEmployee(createDto);
-        return EmployeeMapper.INSTANCE.employeeToEmployeeReadDto(employeeService.createEmployee(employee));
+
+        return EmployeeMapper.INSTANCE.employeeToEmployeeReadDto(
+                employeeService.createEmployee(employee)
+                                                                );
     }
 
     //---------------------------------------------------------------------------------------
     //Обновление юзера (patch)
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Employee patchEmployee(@PathVariable("id") Integer id, @Valid @RequestBody EmployeePatchDto patchDto) {
+    public Employee patchEmployee(@PathVariable("id") Integer id,
+                                  /*@Valid*/ @RequestBody EmployeePatchDto patchDto) {
         Employee employee = EmployeeMapper.INSTANCE.employeePatchDtoToEmployee(patchDto);
         return employeeService.patchEmployee(id, employee);
     }
@@ -86,8 +87,10 @@ public class EmployeeController {
     //Full update юзера (put)
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Employee putEmployee(@PathVariable("id") Integer id, @Valid @RequestBody EmployeePutDto putDto) {
+    public Employee putEmployee(@PathVariable("id") Integer id,
+                                @Valid @RequestBody EmployeePutDto putDto) {
         Employee employee = EmployeeMapper.INSTANCE.employeePutDtoToEmployee(putDto);
+        System.err.println("putDto = "+putDto);
         return employeeService.updateEmployee(id, employee);
     }
 
@@ -112,10 +115,8 @@ public class EmployeeController {
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
     public List<EmployeeReadDto> getAllUsers() {
-        return employeeService.getAll()
-                .stream()
-                .map(EmployeeMapper.INSTANCE::employeeToEmployeeReadDto)
-                .collect(Collectors.toList());
+        return employeeService.getAll().stream().map(EmployeeMapper.INSTANCE::employeeToEmployeeReadDto)
+                              .collect(Collectors.toList());
     }
 
     //---------------------------------------------------------------------------------------
@@ -287,8 +288,8 @@ public class EmployeeController {
         employeeService.massTestUpdate();
         LocalDateTime timeStop = LocalDateTime.now();
         log.info("Controller -> employeeMassPatchUpdate() method start: time={}", timeStop);
-        log.info("Controller -> employeeMassPatchUpdate() method execution, ms: duration={}"
-                , Duration.between(timeStart, timeStop).toMillis());
+        log.info("Controller -> employeeMassPatchUpdate() method execution, ms: duration={}",
+                Duration.between(timeStart, timeStop).toMillis());
         return Duration.between(timeStart, timeStop).toMillis();
     }
 
