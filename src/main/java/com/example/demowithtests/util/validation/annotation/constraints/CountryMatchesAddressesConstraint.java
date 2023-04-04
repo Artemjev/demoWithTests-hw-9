@@ -1,6 +1,6 @@
-package com.example.demowithtests.util.validation.annotation;
+package com.example.demowithtests.util.validation.annotation.constraints;
 
-import com.example.demowithtests.util.validation.validator.CountyMatchesAddressesValidator;
+import com.example.demowithtests.util.validation.validator.CountyMatchesAddressesEmployeePutDtoValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -20,14 +20,11 @@ import java.lang.annotation.Target;
  * вешать над разными сущностями/дто-хами, указывая валидируемый класс (напр. EmployeePutDto.class),
  * название валидимруемых (напр. "country", "addresses"), прочее в параметрах аннотации. Но ...
  */
-//@Target(ElementType.FIELD)
-//@Target({ElementType.FIELD, ElementType.TYPE})
+
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = CountyMatchesAddressesValidator.class)
-public @interface CountryMatchesAddresses {
-
-//    Class value() default EmployeePutDto.class;
+@Constraint(validatedBy = {CountyMatchesAddressesEmployeePutDtoValidator.class})
+public @interface CountryMatchesAddressesConstraint {
 
     String message() default
             "Check the worker's country of residence (field: country). " +
@@ -36,5 +33,4 @@ public @interface CountryMatchesAddresses {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }

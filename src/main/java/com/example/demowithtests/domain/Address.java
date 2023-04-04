@@ -1,6 +1,6 @@
 package com.example.demowithtests.domain;
 
-import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
 

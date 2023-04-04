@@ -27,11 +27,6 @@ public final class SmtpMailer implements Mailer {
         props.put("mail.smtp.port", port);
     }
 
-    //    @Override
-    //    public void apply(Object o) {
-    //        send((String) o);
-    //    }
-
     @Override
     public void send(Employee e) {
 // Создаем сессию
@@ -49,10 +44,7 @@ public final class SmtpMailer implements Mailer {
                     InternetAddress.parse(e.getEmail()));
             message.setSubject("Confirmation");
             message.setText(
-
-//                    http://localhost:8087/api/users/1/confirm
                     "    Пожалуйста, нажмите на ссылку ниже, чтобы подтвердить свою регистрацию:\n" +
-//                            "<a href=\"https://ваш-сервер.com/activate?userId=12345">Подтвердить регистрацию</a>"
                             "    <a href=\"http://localhost:8087/api/users/" + e.getId() + "/confirmed" +
                             ">Подтвердить регистрацию</a>\n" +
                             "Если вы не регистрировались на нашем сайте, проигнорируйте это сообщение.\n");
@@ -62,7 +54,5 @@ public final class SmtpMailer implements Mailer {
         } catch (MessagingException exception) {
             throw new EmailSendingException("Sending mail from " + username + " to " + e.getEmail() + " failed.");
         }
-
     }
-
 }

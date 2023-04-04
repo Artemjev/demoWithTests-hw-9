@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Data
 @Builder
 public class EmployeeReadDto {
@@ -46,5 +47,4 @@ public class EmployeeReadDto {
     public Boolean isPrivate;
 
     public boolean isConfirmed;
-
 }

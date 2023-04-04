@@ -6,9 +6,10 @@ import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.util.exception.NoSuchEmployeeException;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.mail.SmtpMailer;
-import com.example.demowithtests.util.validation.annotation.CustomValidationAnnotation;
-import com.example.demowithtests.util.validation.annotation.CountryMatchesAddresses;
-import com.example.demowithtests.util.validation.annotation.IsBooleanFieldValid;
+import com.example.demowithtests.util.validation.annotation.custom.CountryMatchesAddressesVerification;
+import com.example.demowithtests.util.validation.annotation.custom.CustomValidationAnnotations;
+import com.example.demowithtests.util.validation.annotation.constraints.IsBooleanFieldValidConstraint;
+import com.example.demowithtests.util.validation.annotation.custom.MarkedAsDeleted;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,20 +37,16 @@ public class EmployeeServiceBean implements EmployeeService {
 
     //----------------------------------------------------------------------------------------------------
     @Override
-    @CustomValidationAnnotation({IsBooleanFieldValid.class})
+    @CustomValidationAnnotations({MarkedAsDeleted.class})
     public Employee getEmployee(Integer id) {
         log.debug("getById(Integer id) Service - start: id = {}", id);
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
                         new NoSuchEmployeeException("There is no employee with ID=" + id + " in database"));
+
         changeActiveStatus(employee); // todo: перенести эту обработку в асспект по валидации полей!
         changePrivateStatus(employee);
 
-//        if (employee.getIsDeleted()) throw new ResourceIsDeletedException();
-//        if (employee.getIsPrivate()) throw new ResourceIsPrivateException();
-//        if (!employee.getIsConfirmed()) throw new EmployeeUnconfirmedDataException(
-//                "Employee " + employee.getName() + " has to confirm data. Check" + employee.getEmail() + "mail please");
-//
         log.debug("getById(Integer id) Service - end:  = employee {}", employee);
         return employee;
     }
@@ -63,24 +60,31 @@ public class EmployeeServiceBean implements EmployeeService {
     //----------------------------------------------------------------------------------------------------
     @Override
     @Transactional
-    @CustomValidationAnnotation({IsBooleanFieldValid.class/*, CountryMatchesAddresses.class*/})
+    @CustomValidationAnnotations({MarkedAsDeleted.class, CountryMatchesAddressesVerification.class})
     public Employee patchEmployee(Integer id, Employee employee) {
         log.debug("updateById(Integer id, Employee employee) Service start: id = {}, employee = {}", employee.getId());
         return employeeRepository.findById(id).map(e -> {
-                    if (employee.getName() != null && !employee.getName().equals(e.getName()))
+                    if (employee.getName() != null && !employee.getName().equals(e.getName())) {
                         e.setName(employee.getName());
-                    if (employee.getEmail() != null && !employee.getEmail().equals(e.getEmail()))
+                    }
+                    if (employee.getEmail() != null && !employee.getEmail().equals(e.getEmail())) {
                         e.setEmail(employee.getEmail());
-                    if (employee.getCountry() != null && !employee.getCountry().equals(e.getCountry()))
+                    }
+                    if (employee.getCountry() != null && !employee.getCountry().equals(e.getCountry())) {
                         e.setCountry(employee.getCountry());
-                    if (employee.getAddresses() != null && !employee.getAddresses().equals(e.getAddresses()))
+                    }
+                    if (employee.getAddresses() != null && !employee.getAddresses().equals(e.getAddresses())) {
                         e.setAddresses(employee.getAddresses());
-                    if (employee.getIsDeleted() != null && !employee.getIsDeleted().equals(e.getIsDeleted()))
+                    }
+                    if (employee.getIsDeleted() != null && !employee.getIsDeleted().equals(e.getIsDeleted())) {
                         e.setIsDeleted(employee.getIsDeleted());
-                    if (employee.getIsPrivate() != null && !employee.getIsPrivate().equals(e.getIsPrivate()))
+                    }
+                    if (employee.getIsPrivate() != null && !employee.getIsPrivate().equals(e.getIsPrivate())) {
                         e.setIsPrivate(employee.getIsPrivate());
-                    if (employee.getIsConfirmed() != null && !employee.getIsConfirmed().equals(e.getIsConfirmed()))
+                    }
+                    if (employee.getIsConfirmed() != null && !employee.getIsConfirmed().equals(e.getIsConfirmed())) {
                         e.setIsConfirmed(employee.getIsConfirmed());
+                    }
                     //todo:
                     // Код выше (как я понимаю, реализует patch, не put, лайтово мержит), што-то мне подсказывает,
                     // можно не писать для каждой сущности, а написать некую утилиту c методом, который принимает
@@ -97,7 +101,7 @@ public class EmployeeServiceBean implements EmployeeService {
     //----------------------------------------------------------------------------------------------------
     @Override
     @Transactional
-    @CustomValidationAnnotation({IsBooleanFieldValid.class/*, CountryMatchesAddresses.class*/})
+    @CustomValidationAnnotations({IsBooleanFieldValidConstraint.class})
     public Employee updateEmployee(Integer id, Employee employee) {
         log.debug("updateEmployee(Integer id, Employee employee) Service start: id={},employee = {}", employee.getId());
         return employeeRepository.findById(id).map(e -> {
@@ -186,7 +190,6 @@ public class EmployeeServiceBean implements EmployeeService {
         List<Employee> employeeList = employeeRepository.findAll();
         return employeeList.stream()
                 .map(Employee::getCountry)
-//                .filter(c -> c.startsWith("U"))
                 .sorted(Comparator.naturalOrder())
                 .collect(Collectors.toList());
     }
@@ -232,7 +235,6 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     //---------------------------------------------------------------------------------------
-    // hw-5
     @Override
     public Page<Employee> getAllActive(Pageable pageable) {
         return employeeRepository.findAllActive(pageable);
@@ -245,7 +247,6 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     //---------------------------------------------------------------------------------------
-    // hw-6
     @Override
     public void sendMailConfirm(Integer id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
@@ -261,7 +262,6 @@ public class EmployeeServiceBean implements EmployeeService {
     }
 
     //---------------------------------------------------------------------------------------
-    // hw-7
     @Override
     public void generateEntity(Integer quantity, Boolean clear) {
         if (clear) employeeRepository.deleteAll();
@@ -282,9 +282,8 @@ public class EmployeeServiceBean implements EmployeeService {
 
     //---------------------------------------------------------------------------------------
     // private methods
-    // todo: хорошо бы, наверное, подобные методы в к какую-то спец.утилиту выноситиь...
+    // todo: хорошо бы, наверное, подобные методы в к какую-то спец.утилиту вынести...
     //----------------------------------------------------------------------------------------------------
-
     private void changePrivateStatus(Employee employee) {
         log.info("changePrivateStatus() Service - start: id = {}", employee.getId());
         if (employee.getIsPrivate() == null) {
@@ -318,27 +317,6 @@ public class EmployeeServiceBean implements EmployeeService {
         }
         return sorts;
     }
-
-    //----------------------------------------------------------------------------------------------------
-    //    private Employee hideDetailsIfIsPrivate(Employee employee) {
-//        log.debug("hideDetailsIfIsPrivate() Service - start: id = {}", employee.getId());
-//        //        Employee clone = employee.clone();
-////        return (employee.getIsPrivate() == Boolean.FALSE) ? employee :
-//        Employee hiddenEmployee = (employee.getIsPrivate() == Boolean.FALSE) ? employee :
-//                Employee.builder()
-//                        .id(employee.getId())
-//                        .name("is hidden")
-//                        .country("is hidden")
-//                        .email("is hidden")
-//                        .isPrivate(employee.getIsPrivate())
-////                        .addresses(null)
-////                        .gender(employee.getGender())
-////                        .isConfirmed(employee.getIsConfirmed())
-//                        .build();
-//        log.debug("hideDetailsIfIsPrivate Service - end:  = employee {}", employee);
-//        return hiddenEmployee;
-//    }
-    //----------------------------------------------------------------------------------------------------
 }
 
 

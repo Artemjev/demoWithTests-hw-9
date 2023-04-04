@@ -4,5 +4,4 @@ public class EmployeeUnconfirmedDataException extends RuntimeException{
     public EmployeeUnconfirmedDataException(String message) {
         super(message);
     }
-
 }

@@ -2,8 +2,8 @@ package com.example.demowithtests.dto.employee;
 
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.address.AddressDto;
-import com.example.demowithtests.util.validation.annotation.CountryMatchesAddresses;
-import com.example.demowithtests.util.validation.annotation.IsBooleanFieldValid;
+import com.example.demowithtests.util.validation.annotation.constraints.CountryMatchesAddressesConstraint;
+import com.example.demowithtests.util.validation.annotation.constraints.IsBooleanFieldValidConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -16,8 +16,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Data
-@CountryMatchesAddresses
+@CountryMatchesAddressesConstraint
 public class EmployeePutDto {
 
     @NotNull(message = "Name may not be null")
@@ -39,13 +40,14 @@ public class EmployeePutDto {
 
     public LocalDateTime datetime = LocalDateTime.now();
 
-//    @IsBooleanFieldValid(value = true, message = "@IsBooleanFieldValid validation: " +
+    //    @IsBooleanFieldValid(value = true, message = "@IsBooleanFieldValid validation: " +
 //            "have to use a specific endpoint to resurrect employee (set isDeleted=false)!")
     public Boolean isDeleted;
 
     public Boolean isPrivate;
 
-    @IsBooleanFieldValid(value = false, message = "@IsBooleanFieldValid validation: " +
-            "the status isConfirmed=true can only be set by employee himself via confirmation email!")
+    @IsBooleanFieldValidConstraint(value = false,
+                                   message = "@IsBooleanFieldValid validation: the status isConfirmed=true can only " +
+                                             "be set by employee himself via confirmation email!")
     public Boolean isConfirmed;
 }

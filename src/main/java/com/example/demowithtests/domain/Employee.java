@@ -1,8 +1,8 @@
 package com.example.demowithtests.domain;
 
 
-import com.example.demowithtests.util.validation.annotation.CountryMatchesAddresses;
-import com.example.demowithtests.util.validation.annotation.IsBooleanFieldValid;
+import com.example.demowithtests.util.validation.annotation.custom.CountryMatchesAddressesVerification;
+import com.example.demowithtests.util.validation.annotation.custom.MarkedAsDeleted;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +19,10 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@CountryMatchesAddresses
-public class Employee /*implements Cloneable*/ {
+//@CountryMatchesAddresses- БУДУ ПОМНИТЬ! ЧТО В СЕРВИСАХ НЕЛЬЗЯ ЮЗАТЬ КАСТОМНЫЕ АННОТАЦИИ ВАЛИДАЦИИ ПОМЕЧЕННЫЕ @Constraint
+// т.е. теже что для контроллеров.
+@CountryMatchesAddressesVerification
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,11 +42,9 @@ public class Employee /*implements Cloneable*/ {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @IsBooleanFieldValid(value = false, message = "Check the user's \"isDeleted\" field. " +
-            "Employee marked as deleted (isDeleted=true)!")
+    @MarkedAsDeleted(value = false)
     private Boolean isDeleted = Boolean.FALSE;
 
-    //    @IsBooleanFieldValid(value = false, message = "Check the user's   \"isPrivate\" field")
     private Boolean isPrivate = Boolean.FALSE;
 
     /**
@@ -53,10 +53,7 @@ public class Employee /*implements Cloneable*/ {
      * указанный email. Пока работник их не подтвердит (ссылка в письме отправляет запрос на сервер),
      * его учетная запись будет неактивна в системе.
      */
-//    @IsBooleanFieldValid(value = true, message = "Check the user's   \"isConfirmed\" field")
     private Boolean isConfirmed = Boolean.FALSE;
-
-
 
 //----------------------------------------------------------------------------------------------------
 //    @Override
@@ -73,4 +70,3 @@ public class Employee /*implements Cloneable*/ {
 //                this.isConfirmed
 //        );
 }
-

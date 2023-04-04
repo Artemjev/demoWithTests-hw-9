@@ -18,7 +18,7 @@ public interface EmployeeMapper {
 
     //Переопределял метод маппера, что бы корректно отображать фронту приватных сотрудников (скрываем данные, если
     // isPrivate=true).
-    // Сейчас кажеться, это было проще реализовать используя АОП (CustomEntityValidationAspect) и кастомную аннотацию
+    // Сейчас кажеться, это было проще реализовать используя АОП (CustomValidationAspect) и кастомную аннотацию
     // @IsBooleanFieldValid для валидирования логических полей (механизм валидации сущности в сервисе написан).
     // Но этот вариант сокрытия данных приватных сотрудников (через маппер) был написан ранее. Пусть отстается как
     // альтернативный вариант, для демонстрации разнообразия способов)
@@ -47,8 +47,6 @@ public interface EmployeeMapper {
                                 .name("is hidden")
                                 .country("is hidden")
                                 .email("is hidden")
-//                                .addresses(null)
-//                                .gender(employee.getGender())
                                 .isPrivate(employee.getIsPrivate())
                                 .isDeleted(employee.getIsDeleted())
                                 .isConfirmed(employee.getIsConfirmed())

@@ -66,11 +66,12 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeReadDto createEmployee(@Valid @RequestBody EmployeeCreateDto createDto) {
+
         Employee employee = EmployeeMapper.INSTANCE.employeeCreateDtoToEmployee(createDto);
 
         return EmployeeMapper.INSTANCE.employeeToEmployeeReadDto(
                 employeeService.createEmployee(employee)
-                                                                );
+        );
     }
 
     //---------------------------------------------------------------------------------------
@@ -80,6 +81,7 @@ public class EmployeeController {
     public Employee patchEmployee(@PathVariable("id") Integer id,
                                   /*@Valid*/ @RequestBody EmployeePatchDto patchDto) {
         Employee employee = EmployeeMapper.INSTANCE.employeePatchDtoToEmployee(patchDto);
+        System.err.println("\"Controller -> patchEmployee() employee =   " + employee);
         return employeeService.patchEmployee(id, employee);
     }
 
@@ -146,8 +148,7 @@ public class EmployeeController {
                                         @RequestParam(defaultValue = "3") int size,
                                         @RequestParam(defaultValue = "") List<String> sortList,
                                         @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
-        //Pageable paging = PageRequest.of(page, size);
-        //Pageable paging = PageRequest.of(page, size, Sort.by("name").ascending());
+
         return employeeService.findByCountryContaining(country, page, size, sortList, sortOrder.toString());
     }
 
@@ -223,7 +224,6 @@ public class EmployeeController {
     }
 
     //---------------------------------------------------------------------------------------
-
     /**
      * Метод отправляет на почту юзера письмо с запросом на подтверждение.
      * Из письма юзер должен дернуть эндпоинт "/users/{id}/confirmed" (ссылка в тексте письма специальная),
@@ -238,8 +238,8 @@ public class EmployeeController {
     public void sendConfirm(@PathVariable Integer id) {
         employeeService.sendMailConfirm(id);
     }
-    //---------------------------------------------------------------------------------------
 
+    //---------------------------------------------------------------------------------------
     // @PatchMapping("/users/{id}/confirmed")
     // Get - костыль, так из письма проще этот эндпоинт дергать.
     @GetMapping("/{id}/confirmed")

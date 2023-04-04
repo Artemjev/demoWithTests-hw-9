@@ -2,7 +2,6 @@ package com.example.demowithtests.dto.employee;
 
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.address.AddressDto;
-import com.example.demowithtests.util.validation.annotation.IsBooleanFieldValid;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

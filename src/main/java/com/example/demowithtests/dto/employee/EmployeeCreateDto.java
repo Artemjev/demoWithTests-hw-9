@@ -2,7 +2,7 @@ package com.example.demowithtests.dto.employee;
 
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.address.AddressDto;
-import com.example.demowithtests.util.validation.annotation.IsBooleanFieldValid;
+import com.example.demowithtests.util.validation.annotation.constraints.IsBooleanFieldValidConstraint;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-//@CountryMatchesAddresses
+//@CountryMatchesAddresses - что бы работало, нужно делать отдельный валидатор CountyMatchesAddressesEmployeePutDtoValidator
 public class EmployeeCreateDto {
 
     @NotNull(message = "Name may not be null")
@@ -43,8 +43,9 @@ public class EmployeeCreateDto {
      * Суть валидации @IsBooleanFieldValid над этим полем:
      * - смысл создавать нового юзера удаленным (полем isDeleted = true) отсутствут.
      */
-    @IsBooleanFieldValid(value = false, message = "@IsBooleanFieldValid validation: " +
-            "does it make sense to create a new employee with status isDeleted=true?!")
+    @IsBooleanFieldValidConstraint(value = false,
+                                   message = "@IsBooleanFieldValid validation: does it make sense to create" +
+                                             " a new employee with status isDeleted=true?!")
     public Boolean isDeleted;
 
     public Boolean isPrivate;
@@ -54,8 +55,9 @@ public class EmployeeCreateDto {
      * - нельзя создавать нового юзера с полем isConfirmed = true , т.к. сотрудник не получит письмо =>
      * не подтвердит свои данные  => как следствие, не будет нести ответственнсти за предоставление должной инф-ции.
      */
-    @IsBooleanFieldValid(value = false, message = "@IsBooleanFieldValid validation: " +
-            "the status isConfirmed=true can only be set by employee himself via confirmation email!")
+    @IsBooleanFieldValidConstraint(value = false,
+                                   message = "@IsBooleanFieldValid validation: the status isConfirmed=true can " +
+                                             "only be set by employee himself via confirmation email!")
     public boolean isConfirmed;
 
 }

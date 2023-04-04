@@ -1,4 +1,4 @@
-package com.example.demowithtests.util.validation.annotation;
+package com.example.demowithtests.util.validation.annotation.constraints;
 
 import com.example.demowithtests.util.validation.validator.BooleanFieldValidator;
 
@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = BooleanFieldValidator.class)
-public @interface IsBooleanFieldValid {
+public @interface IsBooleanFieldValidConstraint {
 
     boolean value() default true; // класс-обертку Boolean не хочет за поле анотации принимать
 

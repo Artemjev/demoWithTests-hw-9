@@ -23,14 +23,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     Page<Employee> findByCountryContaining(String country, Pageable pageable);
 
     @Query(value = "select * from users join addresses on users.id = addresses.employee_id " +
-            "where users.gender = :gender and addresses.country = :country", nativeQuery = true)
+                   "where users.gender = :gender and addresses.country = :country", nativeQuery = true)
     List<Employee> findByGender(String gender, String country);
 
     @Query("select e from Employee e join e.addresses a where a.addressHasActive = true and a.country = :country")
     Page<Employee> findAllWhereIsActiveAddressByCountry(String country, Pageable pageable);
 
     //---------------------------------------------------------------
-    //    My hw-5
     @Query("select e from Employee e where e.isDeleted = false")
     Page<Employee> findAllActive(Pageable pageable);
 
@@ -43,6 +42,4 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     List<Employee> queryEmployeeByIsPrivateIsNull();
 
     List<Employee> queryEmployeeByIsConfirmedNull();
-
-
 }
